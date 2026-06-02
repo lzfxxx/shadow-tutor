@@ -1,0 +1,177 @@
+# Shadow Tutor —— 初级工程师概念分类种子
+#
+# 用途：knowledge.json 里的概念 id 尽量挂到这份分类，便于跨会话聚合与抑制。
+# 这不是封闭枚举——遇到表里没有的概念，agent 可新建 id（用 `分类.小写点分` 风格，
+# 如 `react.use-effect-cleanup`），保持命名一致即可。
+# 目标量级 ~150，覆盖初级工程师日常会撞到的"非显然"知识点。每条尽量是"会出错或常被误解"的点。
+
+language-core:
+  - js.closure                      # 闭包与变量捕获
+  - js.hoisting
+  - js.this-binding
+  - js.equality-coercion            # == vs === 与隐式转换
+  - js.array-methods                # map/filter/reduce/find 的选择
+  - js.spread-rest
+  - js.destructuring
+  - js.optional-chaining
+  - js.nullish-vs-or                # ?? 与 || 的区别
+  - js.mutation-vs-immutability
+  - js.reference-vs-value
+  - js.template-literals
+  - js.short-circuit
+  - js.truthiness
+
+async:
+  - async.promise-basics
+  - async.async-await
+  - async.error-handling-try-catch
+  - async.promise-all-vs-sequential
+  - async.race-conditions
+  - async.event-loop
+  - async.callback-to-promise
+  - async.cancellation-abortcontroller
+  - async.debounce-throttle
+  - async.unhandled-rejection
+
+typescript:
+  - ts.basic-types
+  - ts.interface-vs-type
+  - ts.generics
+  - ts.union-narrowing
+  - ts.optional-vs-undefined
+  - ts.unknown-vs-any
+  - ts.type-assertion-risk
+  - ts.utility-types               # Partial/Pick/Omit/Record
+  - ts.discriminated-union
+  - ts.readonly
+  - ts.function-overload
+  - ts.inference-vs-annotation
+
+react:
+  - react.controlled-input
+  - react.use-state-basics
+  - react.use-state-stale-closure
+  - react.use-effect-deps          # 依赖数组
+  - react.use-effect-cleanup
+  - react.use-memo                 # 动机：避免无关重算
+  - react.use-callback
+  - react.key-prop
+  - react.lifting-state-up
+  - react.derived-state            # 派生 state 不该塞进 useState
+  - react.conditional-rendering
+  - react.list-rendering
+  - react.prop-drilling
+  - react.context-basics
+  - react.re-render-causes
+  - react.effect-vs-event
+
+state-data:
+  - data.normalization
+  - data.immutable-update          # 不可变更新数组/对象
+  - data.pagination
+  - data.optimistic-update
+  - data.caching-basics
+  - data.loading-error-states
+
+http-api:
+  - http.methods-semantics         # GET/POST/PUT/PATCH/DELETE 语义
+  - http.status-codes
+  - http.rest-resource-modeling
+  - http.query-vs-body
+  - http.cors
+  - http.auth-headers
+  - http.idempotency
+  - http.fetch-error-handling
+  - http.content-type
+  - http.pagination-params
+
+database:
+  - db.sql-select-basics
+  - db.joins
+  - db.indexing-basics
+  - db.n-plus-one
+  - db.transactions
+  - db.where-vs-having
+  - db.null-handling
+  - db.aggregate-group-by
+  - db.migration-basics
+  - db.orm-vs-raw
+
+error-handling:
+  - err.throw-vs-return
+  - err.error-types
+  - err.fail-fast-vs-recover
+  - err.user-facing-vs-log
+  - err.boundary-handling
+  - err.finally-cleanup
+
+testing:
+  - test.unit-vs-integration
+  - test.arrange-act-assert
+  - test.mocking-basics
+  - test.async-testing
+  - test.test-doubles
+  - test.coverage-meaning
+  - test.what-to-test              # 测行为不测实现
+  - test.fixtures-setup
+
+performance:
+  - perf.big-o-intuition
+  - perf.unnecessary-work
+  - perf.memoization
+  - perf.lazy-loading
+  - perf.batching
+  - perf.measure-before-optimize
+
+security-basics:
+  - sec.input-validation
+  - sec.sql-injection
+  - sec.xss
+  - sec.secrets-handling
+  - sec.auth-vs-authz
+  - sec.least-privilege
+  - sec.dependency-risk
+
+data-structures:
+  - ds.array-vs-object-lookup
+  - ds.map-set
+  - ds.when-hashmap
+  - ds.stack-queue
+  - ds.recursion-basics
+  - ds.tree-traversal
+
+git-workflow:
+  - git.commit-granularity
+  - git.branch-basics
+  - git.merge-vs-rebase
+  - git.resolve-conflict
+  - git.gitignore
+  - git.atomic-commits
+
+tooling-build:
+  - tool.package-json-scripts
+  - tool.semver
+  - tool.lockfile-purpose
+  - tool.env-variables
+  - tool.bundler-basics
+  - tool.linter-formatter
+  - tool.dev-vs-prod-deps
+
+code-quality:
+  - quality.naming
+  - quality.single-responsibility
+  - quality.early-return
+  - quality.dry-vs-premature-abstraction
+  - quality.pure-functions
+  - quality.side-effect-isolation
+  - quality.magic-numbers
+  - quality.comment-why-not-what
+  - quality.dead-code
+
+architecture-basics:
+  - arch.separation-of-concerns
+  - arch.layering
+  - arch.config-vs-code
+  - arch.dependency-direction
+  - arch.interface-boundary
+  - arch.stateless-vs-stateful
