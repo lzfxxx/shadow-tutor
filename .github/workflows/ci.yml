@@ -30,3 +30,8 @@ jobs:
           test -f "$CLAUDE_SKILLS_DIR/shadow-tutor/METHODOLOGY.md"
           test -f "$CODEX_SKILLS_DIR/shadow-tutor/SKILL.md"
           test -f "$CODEX_SKILLS_DIR/shadow-tutor/scripts/knowledge.mjs"
+      - name: Plugin layout is in sync with sources
+        run: |
+          node bin/cli.mjs build
+          git diff --exit-code plugins/ \
+            || { echo "plugins/ is stale — run 'node bin/cli.mjs build' and commit the result"; exit 1; }

@@ -37,15 +37,19 @@ You code with the AI as usual → reach a stopping point → `/shadow-tutor` →
 ## Install
 
 ```bash
-# Option A — one-liner via npx (cross-platform)
-npx shadow-tutor install            # installs into both Codex and Claude Code
+# Option A — one-liner via npx (cross-platform, installs into both tools)
+npx shadow-tutor install            # or: npx shadow-tutor install cc | codex
 
-# Option B — clone and run the installer
-git clone https://github.com/lzfxxx/shadow-tutor && cd shadow-tutor
-./install.sh                        # or: ./install.sh cc | ./install.sh codex
+# Option B — Claude Code plugin marketplace
+#   /plugin marketplace add lzfxxx/shadow-tutor
+#   /plugin install shadow-tutor@shadow-tutor
 
 # Option C — Codex skill-installer, straight from this repo
-# inside Codex:  $skill-installer https://github.com/lzfxxx/shadow-tutor
+#   $skill-installer https://github.com/lzfxxx/shadow-tutor
+
+# Option D — clone and run the installer
+git clone https://github.com/lzfxxx/shadow-tutor && cd shadow-tutor
+./install.sh                        # or: ./install.sh cc | ./install.sh codex
 ```
 
 Then, in either tool, finish some coding and invoke `/shadow-tutor`.

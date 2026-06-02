@@ -1,0 +1,18 @@
+{
+  "name": "shadow-tutor",
+  "displayName": "Shadow Tutor",
+  "version": "0.1.0",
+  "description": "A post-session programming tutor that runs as an in-session Codex/Claude Code skill. After an AI-assisted coding session, it teaches you why the AI made each decision and drills you with forced-recall exercises — fighting the skill atrophy that AI coding causes.",
+  "author": {
+    "name": "Shadow Tutor contributors"
+  },
+  "homepage": "https://github.com/lzfxxx/shadow-tutor",
+  "repository": "git+https://github.com/lzfxxx/shadow-tutor.git",
+  "license": "MIT",
+  "keywords": [
+    "developer-education",
+    "ai-coding",
+    "code-review",
+    "learning"
+  ]
+}
