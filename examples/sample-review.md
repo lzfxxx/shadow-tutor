@@ -1,6 +1,6 @@
 # Example: a real Shadow Tutor review
 
-> This is a real review produced by the eval harness from the `react-search-filter` fixture, scored **15/16** by the rubric (the one dropped point: it ran slightly long — since fixed by the "one page" rule in `METHODOLOGY.md`). Translated to English from the original run. Regenerate your own with `npm run eval`.
+> This is a real review produced by the eval harness from the `react-search-filter` fixture, scored **15/16** by the rubric. The one dropped point is conciseness — the current known weak dimension we're actively tightening in `METHODOLOGY.md` (memory anchors and per-card rationale still overlap, pushing past a one-page skim). Translated to English from the original run. Regenerate your own with `npm run eval`.
 
 ---
 
