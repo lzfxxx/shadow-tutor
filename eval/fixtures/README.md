@@ -1,21 +1,21 @@
-# Fixtures —— 录给 eval 用的会话记录
+# Fixtures — recorded sessions for eval
 
-每个 fixture 是一份 markdown，描述**一次真实编码会话**：用户需求、改前代码、AI 的推理（尤其"为什么这么决策、否决了什么"）、应用的 diff、结果、以及项目是否有测试。`run-eval.mjs` 把它当作"这次会话"喂给无头 agent 产出复盘，再用 rubric 打分。
+Each fixture is a markdown file describing **one real coding session**: the user's request, the before-code, the AI's reasoning (especially "why it decided what it decided, and what it rejected"), the applied diff, the outcome, and whether the project has tests. `run-eval.mjs` feeds it to a headless agent as "this session" to produce a review, then scores the review with the rubric.
 
-## 怎么录一个真实 fixture
+## How to record a real fixture
 
-1. 用 Claude Code 或 Codex 正常完成一个小任务。
-2. 找到本次会话日志：
-   - CC：`~/.claude/projects/<cwd-把/换成->/<sessionId>.jsonl`
-   - Codex：`~/.codex/sessions/<年>/.../rollout-<ts>-<uuid>.jsonl`
-3. 把它整理成本目录里 `react-search-filter.md` 那样的结构（保留 AI 的 thinking/决策理由——那是复盘"讲 why"的命根子）。
-4. 放进 `cc/` 或 `codex/`，文件名见名知意。
+1. Complete a small task normally with Claude Code or Codex.
+2. Find the session log:
+   - Claude Code: `~/.claude/projects/<cwd-with-/-replaced-by-->/<sessionId>.jsonl`
+   - Codex: `~/.codex/sessions/<year>/.../rollout-<ts>-<uuid>.jsonl`
+3. Distill it into the structure of `react-search-filter.md` in this folder (keep the AI's thinking/decision rationale — that's the lifeblood of teaching "why").
+4. Put it in `cc/` or `codex/` with a descriptive filename.
 
-## 好 fixture 的标准
+## What makes a good fixture
 
-- **混入噪音**：既有真正值得教的点（非显然决策、易错点），也有不值得教的样板（import、JSX 套壳）。这样才能检验方法论"选得准不准"。
-- **保留"为什么"和"否决了什么"**：这是和普通 diff 摘要拉开差距的地方。
-- **标注是否有测试**：决定 `fill-the-faded-blank` 能不能跑测试判分。
-- 覆盖不同难度/语言/框架，别只有 React。
+- **Mix in noise**: include both genuinely teachable points (non-obvious decisions, easy mistakes) and not-worth-teaching boilerplate (imports, JSX wrapping). That's what tests whether the methodology "selects precisely."
+- **Keep the "why" and "what was rejected"**: this is where it differs from a plain diff summary.
+- **Note whether there are tests**: determines whether `fill-the-faded-blank` can be graded by running tests.
+- Cover varied difficulty/languages/frameworks — don't make everything React.
 
-`react-search-filter.md` 是手写示例，足够跑通 harness；正式回归请尽快换成真实录制的会话。
+`react-search-filter.md` is a hand-written example, enough to exercise the harness; for real regression, replace it with actual recorded sessions as soon as possible.

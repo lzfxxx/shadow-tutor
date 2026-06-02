@@ -1,19 +1,19 @@
-# "好复盘" 评分 rubric
+# "Good review" scoring rubric
 
-用于给 Shadow Tutor 产出的一次复盘打分。**评分者也是一个 LLM**（由 `run-eval.mjs` 调用），按下面每一维 0–2 分打分并给出理由。满分 16。这是迭代 `METHODOLOGY.md` 的回归基线——改方法论后跑这个，看分有没有掉。
+Used to score a review produced by Shadow Tutor. **The grader is also an LLM** (invoked by `run-eval.mjs`), scoring each dimension 0–2 with a reason. Max 16. This is the regression baseline for iterating on `METHODOLOGY.md` — after changing the methodology, run this and check the score didn't drop.
 
-> 核心立场：**这份复盘的价值不在"覆盖全"，而在"选得准 + 讲透 why + 逼人回忆"。** 一份只复述会话的"全面总结"应当得低分。
+> Core stance: **the value of a review is not "covers everything" but "selects precisely + explains why + forces recall."** A comprehensive "summary" that just replays the session should score LOW.
 
-| # | 维度 | 0 分 | 1 分 | 2 分 |
+| # | Dimension | 0 | 1 | 2 |
 |---|---|---|---|---|
-| 1 | **选择性** | 塞了 >5 个点，或事无巨细复述会话 | 3–5 个点但夹带样板/已会内容 | 恰好 3–5 个 load-bearing 点，明显做过取舍 |
-| 2 | **证据绑定** | 讲通用知识，不指向本次代码 | 部分点绑了真实代码 | 每个点都绑定本次会话的真实 diff/决策 |
-| 3 | **讲 why 而非 what** | 只说"是什么"/复述代码 | why 与 what 参半 | 重点在"为什么这样而不那样"，含被否决的方案 |
-| 4 | **gap 命中** | 教的都是用户显然已会的 | 部分点切中盲区 | 精准命中用户大概率不会、且重要的点 |
-| 5 | **练习强制回忆** | 没练习，或只有选择题 | 有练习但偏识别类 | 2–3 个逼用户自己产出的练习（填空/解释/改 bug） |
-| 6 | **可判分性** | 练习无法判分 | 部分可判分 | 练习设计成可跑测试或有明确 rubric 判分 |
-| 7 | **结构化收尾** | 无收尾 | 有部分收尾 | 完整三段：教了什么/故意跳过什么(含原因)/还不确定哪 |
-| 8 | **简洁与可读** | 冗长啰嗦/居高临下 | 尚可 | 短、具体、像资深同事，一页内读完 |
+| 1 | **Selectivity** | >5 points, or replays the session blow-by-blow | 3–5 points but mixed with boilerplate/already-known | exactly 3–5 load-bearing points, clearly curated |
+| 2 | **Evidence binding** | generic knowledge, not pointing at this session's code | some points bound to real code | every point bound to a real diff/decision from this session |
+| 3 | **Why over what** | only "what it is" / replays code | why and what roughly half-half | focus on "why this and not that", includes the rejected option |
+| 4 | **Gap hit** | teaches what the user obviously already knows | some points hit blind spots | precisely hits points the user likely doesn't know AND that matter |
+| 5 | **Forced recall** | no exercises, or only multiple-choice | has exercises but recognition-leaning | 2–3 exercises that force the user to produce (fill-blank/explain/fix-bug) |
+| 6 | **Gradability** | exercises can't be graded | partly gradable | exercises designed to run tests or have a clear rubric |
+| 7 | **Structured closeout** | no closeout | partial closeout | full three parts: taught / deliberately-skipped (with reason) / unsure-about |
+| 8 | **Concise & readable** | long-winded / condescending | acceptable | short, concrete, like a senior colleague, reads in one page |
 
-**判定线**：≥13 合格；10–12 待打磨；<10 不合格。
-评分输出 JSON：`{ "scores": {"1":n,...,"8":n}, "total": n, "verdict": "pass|borderline|fail", "notes": "每维一句理由 + 最该改的一点" }`。
+**Thresholds**: ≥13 pass; 10–12 borderline; <10 fail.
+Scoring output JSON: `{ "scores": {"1":n,...,"8":n}, "total": n, "verdict": "pass|borderline|fail", "notes": "one reason per dimension + the single most important thing to fix" }`.

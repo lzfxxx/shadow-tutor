@@ -1,0 +1,27 @@
+# Optional: automated PR review with the Codex GitHub Action.
+# Disabled by default — it needs an OPENAI_API_KEY secret and (recommended) the Codex for OSS
+# benefit. To enable: add the secret in repo Settings → Secrets, then flip `if:` below to true
+# (or remove the guard). This dogfoods the "integrate your local workflow into CI" pattern.
+
+name: Codex Review (optional)
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  codex-review:
+    # Guard: only runs when explicitly enabled via repo variable ENABLE_CODEX_REVIEW=true.
+    if: ${{ vars.ENABLE_CODEX_REVIEW == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Codex review
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt: |
+            Review this pull request for correctness and for fidelity to the project's
+            teaching methodology. In particular: do changes to METHODOLOGY.md or skill/
+            preserve the iron rules (≤5 points, evidence-bound, why-over-what, mandatory
+            graded exercises, one-page length)? Flag any regression risk to teaching quality.

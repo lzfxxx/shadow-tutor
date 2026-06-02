@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Unit tests
+        run: npm test
+      - name: Eval prompt assembly (dry — no model calls)
+        run: npm run eval:dry
+      - name: Verify installer assembles bundles
+        run: |
+          export CLAUDE_SKILLS_DIR="$RUNNER_TEMP/.claude/skills"
+          export CLAUDE_COMMANDS_DIR="$RUNNER_TEMP/.claude/commands"
+          export CODEX_SKILLS_DIR="$RUNNER_TEMP/.codex/skills"
+          node bin/cli.mjs install all
+          test -f "$CLAUDE_SKILLS_DIR/shadow-tutor/METHODOLOGY.md"
+          test -f "$CODEX_SKILLS_DIR/shadow-tutor/SKILL.md"
+          test -f "$CODEX_SKILLS_DIR/shadow-tutor/scripts/knowledge.mjs"

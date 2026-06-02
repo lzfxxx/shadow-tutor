@@ -1,67 +1,110 @@
 # Shadow Tutor
 
-AI 编程工具让小白也能做出能跑的东西——但用户什么都没学到。代码能跑，能力不长，初级永远初级。Shadow Tutor 把 AI 替你省掉的"挣扎"还回来：每完成一段编码，它基于**这次会话**给你一份短而准的复盘，讲清"为什么这么做"，并逼你做几个练习真正记住。
+> A post-session programming tutor that runs **inside your own Codex or Claude Code session**. After you finish a chunk of AI-assisted work, it teaches you *why* the AI made each decision and drills you with forced-recall exercises — so your skills actually grow.
 
-## 它是什么
+[![CI](https://github.com/lzfxxx/shadow-tutor/actions/workflows/ci.yml/badge.svg)](https://github.com/lzfxxx/shadow-tutor/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+![version](https://img.shields.io/badge/version-0.1.0-blue)
 
-一个 **in-session skill**，跑在你自己的 Claude Code 或 Codex 会话里：
+[English](./README.md) · [中文](./README.zh-CN.md)
 
-- **不是独立 CLI、不挂 hook、不调外部 API。** 你在会话里 `/shadow-tutor` 唤起即可。
-- **用你自己的额度。** 复盘就在当前会话里生成，花的是你已付的订阅。
-- **Claude Code 和 Codex 都是原生 skill。** 两家 skill 格式一致（`<skills>/<name>/SKILL.md` + `name`/`description`），所以共用**同一份** `skill/SKILL.md` + `METHODOLOGY.md`，分别装进各自的 skills 目录，零分叉。
+## The problem
 
-为什么这么简单：在会话里调用时，模型上下文里**已经装着这次会话的全部**——它自己的推理、所有 diff、每个决策。不需要在会话之外重建上下文，于是日志解析、适配器、子进程全都不需要。
+AI coding agents (Codex, Claude Code) let a novice ship things that *run* — but that they don't *understand*. Learning happens in the **struggle**, and the AI removed the struggle. The result: an ability illusion and permanent dependence. Junior engineers stay junior, because the productive friction where skill is built has been optimized away.
 
-## 安装
+Shadow Tutor puts that friction back — **without destroying productivity.**
 
-```bash
-./install.sh         # 同时装 CC 和 Codex
-./install.sh cc      # 只装 Claude Code
-./install.sh codex   # 只装 Codex
-```
+## What it is
 
-装好后，在任一工具里完成一段编码后唤起 `/shadow-tutor`。
+An **in-session skill** that runs in your own Codex or Claude Code session:
 
-## 怎么用
+- **No separate CLI to babysit, no hooks, no external API.** You invoke `/shadow-tutor` inside the session.
+- **Uses your own quota.** The review is generated in your current session, on the subscription you already pay for.
+- **Native skill on both Codex and Claude Code.** Both use the identical skill format (`<skills>/<name>/SKILL.md` + `name`/`description`), so the *same* `skill/SKILL.md` + `METHODOLOGY.md` is installed into each — zero fork.
 
-正常和 AI 一起写代码 → 告一段落 → `/shadow-tutor` → 它会：
-1. 读你的知识档案 `~/.shadow-tutor/knowledge.json`（抑制你已会的）；
-2. 从这次会话里挑 **3–5 个** 你大概率没看懂、但重要的点（先举证、再开讲）；
-3. 每个点讲清**为什么这样而不那样**（含 AI 否决掉的方案），都绑定你这次的真实代码；
-4. 带你做 2–3 个**强制回忆**的练习，能跑测试的直接跑测试判分；
-5. 更新你的知识档案，下次不再重复教你已会的。
+Why this is so simple: when you invoke it in-session, the model **already has the whole session in context** — its own reasoning, every diff, every decision. There's no need to reconstruct the session from logs, so adapters, subprocesses, and log parsing all disappear. The entire product is **one high-quality teaching methodology** (`METHODOLOGY.md`) **plus a per-user knowledge profile.**
 
-## 仓库结构
+## How it works
 
-```
-METHODOLOGY.md        # 产品主体：教学方法论（改行为改这里）
-taxonomy.yaml         # ~150 初级概念种子（知识档案挂靠用）
-scripts/knowledge.mjs # 知识档案读写/校验薄脚本（防模型写坏 JSON）
-skill/SKILL.md        # 共享 skill 薄壳（CC + Codex 同一份）
-claude/commands/      # CC-only 可选 slash command 入口
-install.sh            # 组装自包含 bundle 装进两家 skills 目录
-eval/                 # 教学质量回归 harness（产品成败的度量）
-  run-eval.mjs        # 无头加载 skill 跑 fixture → rubric 打分
-  rubric.md           # "好复盘" 评分标准
-  fixtures/{cc,codex} # 录好的真实会话
-```
+You code with the AI as usual → reach a stopping point → `/shadow-tutor` → it:
 
-## 开发：迭代教学质量
+1. Reads your knowledge profile `~/.shadow-tutor/knowledge.json` (to suppress what you already know);
+2. Picks **3–5** points from this session you most likely missed but that matter (cite-evidence-first, then teach);
+3. Explains **why this and not that** for each (including the options the AI rejected), every point bound to your real code;
+4. Walks you through 2–3 **forced-recall** exercises; where tests exist, it runs them to grade;
+5. Updates your profile, so next time it won't re-teach what you've learned.
 
-产品唯一的生死问题是 **"自动复盘到底教不教得会人"**。所以核心开发循环是对着 eval harness 调 `METHODOLOGY.md`：
+## Install
 
 ```bash
-node eval/run-eval.mjs --dry          # 只组装 prompt 看内容，不调模型（省额度）
-node eval/run-eval.mjs                # 用 claude -p / codex exec 实跑 + rubric 打分
-node eval/run-eval.mjs --only useMemo # 只跑某个 fixture
+# Option A — one-liner via npx (cross-platform)
+npx shadow-tutor install            # installs into both Codex and Claude Code
+
+# Option B — clone and run the installer
+git clone https://github.com/lzfxxx/shadow-tutor && cd shadow-tutor
+./install.sh                        # or: ./install.sh cc | ./install.sh codex
+
+# Option C — Codex skill-installer, straight from this repo
+# inside Codex:  $skill-installer https://github.com/lzfxxx/shadow-tutor
 ```
 
-改完 `METHODOLOGY.md` 重跑，看 rubric 分有没有掉。先录几个**真实会话**进 `eval/fixtures/`（见该目录 README），把分调到稳定合格，再谈打磨。
+Then, in either tool, finish some coding and invoke `/shadow-tutor`.
 
-## 路线（已规划，未实现）
+## What a review looks like
 
-- **P1 可选自动触发**：给想要自动的用户提供 CC SessionEnd hook / 轻量 watcher（不动 skill 骨架）。
-- **P2** `fix-the-bug` 练习 + HTML 复盘。
-- **P3** 间隔重复 / 置信度衰减。
-- **P4** 独立分析层（缓解"自我复盘"偏差）/ Web 仪表盘 / 多用户。
-- **P5** 小白模式 + embedding 概念匹配。
+See [`examples/sample-review.md`](./examples/sample-review.md) for a full real review (scored **15/16** by the eval rubric). A taste:
+
+> ### [decision] `useMemo` here isn't for "performance" — it's to avoid recomputing on unrelated re-renders
+> **Why it did it this way:** writing `products.filter(...)` directly in render is fine for small arrays — the AI considered exactly that. The real motivation: the component re-renders for reasons unrelated to filtering… The underlying concept you're missing: **a React component function is called repeatedly, and everything in its body recomputes by default.**
+>
+> **Exercise (fill-the-faded-blank):** complete the dependency array. If you wrote only `[query]`, what exact symptom would the user see?
+
+## Repository layout
+
+```
+METHODOLOGY.md         # the product: teaching methodology (change behavior here)
+skill/SKILL.md         # shared skill shell (Codex + Claude Code, one source)
+scripts/knowledge.mjs  # knowledge-profile read/write/validate (guards against model corruption)
+scripts/knowledge.test.mjs  # node:test suite (npm test)
+taxonomy.yaml          # ~130 junior-concept seed (for profile aggregation)
+claude/commands/       # Claude Code-only optional slash command
+bin/cli.mjs            # cross-platform installer (npx shadow-tutor install)
+install.sh             # shell installer (assembles bundles into both skills dirs)
+AGENTS.md              # Codex-friendly repo instructions (build/test + skill rules)
+.agents/skills/        # repo-local maintenance skills (dogfooding the Codex pattern)
+eval/                  # teaching-quality regression harness (the measure of success)
+  run-eval.mjs         # headlessly load the skill against fixtures → rubric scoring
+  rubric.md            # "good review" scoring rubric
+  fixtures/{cc,codex}  # recorded real sessions
+```
+
+## Development: iterating on teaching quality
+
+The product's one life-or-death question is **"does the auto-generated review actually teach?"** So the core dev loop is tuning `METHODOLOGY.md` against the eval harness:
+
+```bash
+npm test                 # unit tests for the knowledge profile
+npm run eval:dry         # assemble prompts only, no model calls (saves quota)
+npm run eval             # real run via claude -p / codex exec, then rubric scoring
+node eval/run-eval.mjs --only useMemo   # one fixture
+```
+
+Edit `METHODOLOGY.md`, re-run, and check the rubric score didn't drop. Record a few **real sessions** into `eval/fixtures/` (see that dir's README) to grow the regression set beyond the single seed fixture. See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+## Design notes
+
+- **In-session, hook-free.** Post-hoc learning needs no real-time mechanism; hooks are real-time and Codex-specific, so depending on them would both be redundant and lock the design to one tool. See the architecture rationale in `AGENTS.md`.
+- **BYO-quota.** Generation runs in your session via the same model you're already using.
+- **Privacy.** Reviews and the knowledge profile live under `~/.shadow-tutor/` (not in your project), local by default.
+
+## Roadmap
+
+- **P1 — optional auto-trigger** for users who want it (a Claude Code SessionEnd hook / lightweight watcher), kept off the skill's critical path.
+- **P2** — `fix-the-bug` exercises + HTML review rendering.
+- **P3** — spaced repetition / confidence decay.
+- **P4** — an independent analysis layer (to mitigate "self-review" bias) / web dashboard / multi-user.
+- **P5** — beginner mode + embedding-based concept matching.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

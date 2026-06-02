@@ -1,0 +1,35 @@
+name: Bug report
+description: Something doesn't work as expected (install, eval harness, knowledge profile, the review itself)
+labels: [bug]
+body:
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Which tool?
+      options:
+        - Codex
+        - Claude Code
+        - Both
+        - N/A (tooling/eval/install)
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you do, what did you expect, what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Installed via ...
+        2. Invoked /shadow-tutor after ...
+        3. ...
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "OS, Node version (node -v), codex/claude CLI version"

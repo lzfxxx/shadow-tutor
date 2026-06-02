@@ -1,0 +1,19 @@
+name: Fixture contribution / request
+description: Offer a recorded session as an eval fixture, or request coverage for a language/framework
+labels: [fixture]
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario
+      description: What coding scenario should the fixture cover? Which language/framework, and what teachable points (non-obvious decisions, common mistakes) does it contain?
+    validations:
+      required: true
+  - type: checkboxes
+    id: quality
+    attributes:
+      label: Good-fixture checklist
+      options:
+        - label: Mixes genuinely teachable points with not-worth-teaching boilerplate
+        - label: Preserves the AI's reasoning ("why" and "what it rejected")
+        - label: Notes whether the project has tests (for test-graded exercises)

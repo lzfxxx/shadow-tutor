@@ -1,0 +1,31 @@
+{
+  "$comment": "Descriptor for agent-skill marketplaces/indexers (e.g. SkillsMP) and for discovery. The canonical install paths are: `npx shadow-tutor install`, `./install.sh`, or Codex `$skill-installer <repo-url>`.",
+  "name": "shadow-tutor",
+  "displayName": "Shadow Tutor",
+  "version": "0.1.0",
+  "description": "Post-session programming tutor. After an AI-assisted coding session, it teaches you why the AI made each decision and drills you with forced-recall exercises — fighting the skill atrophy AI coding causes.",
+  "type": "agent-skill",
+  "compatibleWith": ["codex", "claude-code"],
+  "license": "MIT",
+  "author": "Shadow Tutor contributors",
+  "repository": "https://github.com/lzfxxx/shadow-tutor",
+  "homepage": "https://github.com/lzfxxx/shadow-tutor",
+  "keywords": [
+    "developer-education",
+    "ai-coding",
+    "code-review",
+    "learning",
+    "agents-md",
+    "skill"
+  ],
+  "skill": {
+    "entry": "skill/SKILL.md",
+    "supportingFiles": ["METHODOLOGY.md", "scripts/knowledge.mjs"],
+    "invocation": "/shadow-tutor"
+  },
+  "install": {
+    "npx": "npx shadow-tutor install",
+    "script": "./install.sh",
+    "codexSkillInstaller": "$skill-installer https://github.com/lzfxxx/shadow-tutor"
+  }
+}

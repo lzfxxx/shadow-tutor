@@ -1,20 +1,22 @@
-# Shadow Tutor —— 初级工程师概念分类种子
+# Shadow Tutor — seed taxonomy of junior-engineer concepts
 #
-# 用途：knowledge.json 里的概念 id 尽量挂到这份分类，便于跨会话聚合与抑制。
-# 这不是封闭枚举——遇到表里没有的概念，agent 可新建 id（用 `分类.小写点分` 风格，
-# 如 `react.use-effect-cleanup`），保持命名一致即可。
-# 目标量级 ~150，覆盖初级工程师日常会撞到的"非显然"知识点。每条尽量是"会出错或常被误解"的点。
+# Purpose: concept ids in knowledge.json should hang off this taxonomy where possible,
+# to aggregate and suppress across sessions.
+# This is not a closed enumeration — for a concept not listed, the agent may create a new
+# id (use `category.kebab-dotted` style, e.g. `react.use-effect-cleanup`), keeping naming consistent.
+# Target size ~150, covering the "non-obvious" points a junior engineer hits day to day.
+# Each entry should be something that's "easy to get wrong or commonly misunderstood."
 
 language-core:
-  - js.closure                      # 闭包与变量捕获
+  - js.closure                      # closures & variable capture
   - js.hoisting
   - js.this-binding
-  - js.equality-coercion            # == vs === 与隐式转换
-  - js.array-methods                # map/filter/reduce/find 的选择
+  - js.equality-coercion            # == vs === and implicit coercion
+  - js.array-methods                # choosing map/filter/reduce/find
   - js.spread-rest
   - js.destructuring
   - js.optional-chaining
-  - js.nullish-vs-or                # ?? 与 || 的区别
+  - js.nullish-vs-or                # ?? vs || difference
   - js.mutation-vs-immutability
   - js.reference-vs-value
   - js.template-literals
@@ -51,13 +53,13 @@ react:
   - react.controlled-input
   - react.use-state-basics
   - react.use-state-stale-closure
-  - react.use-effect-deps          # 依赖数组
+  - react.use-effect-deps          # dependency array
   - react.use-effect-cleanup
-  - react.use-memo                 # 动机：避免无关重算
+  - react.use-memo                 # motivation: avoid recompute on unrelated re-renders
   - react.use-callback
   - react.key-prop
   - react.lifting-state-up
-  - react.derived-state            # 派生 state 不该塞进 useState
+  - react.derived-state            # derived state should not live in useState
   - react.conditional-rendering
   - react.list-rendering
   - react.prop-drilling
@@ -67,14 +69,14 @@ react:
 
 state-data:
   - data.normalization
-  - data.immutable-update          # 不可变更新数组/对象
+  - data.immutable-update          # immutable update of arrays/objects
   - data.pagination
   - data.optimistic-update
   - data.caching-basics
   - data.loading-error-states
 
 http-api:
-  - http.methods-semantics         # GET/POST/PUT/PATCH/DELETE 语义
+  - http.methods-semantics         # GET/POST/PUT/PATCH/DELETE semantics
   - http.status-codes
   - http.rest-resource-modeling
   - http.query-vs-body
@@ -112,7 +114,7 @@ testing:
   - test.async-testing
   - test.test-doubles
   - test.coverage-meaning
-  - test.what-to-test              # 测行为不测实现
+  - test.what-to-test              # test behavior, not implementation
   - test.fixtures-setup
 
 performance:

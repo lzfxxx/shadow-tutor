@@ -1,0 +1,22 @@
+name: Teaching-quality improvement
+description: Propose a change to how reviews teach (METHODOLOGY.md), backed by a concrete example
+labels: [methodology]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's weak about the current review
+      description: Where did a generated review teach poorly — wrong selection, shallow "why", bad exercise, too long, etc.? Paste the relevant part.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change to METHODOLOGY.md
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Eval evidence
+      description: If you ran `npm run eval`, paste before/after rubric scores. Teaching-quality changes must not regress the rubric.

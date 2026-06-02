@@ -1,0 +1,48 @@
+{
+  "name": "shadow-tutor",
+  "version": "0.1.0",
+  "description": "A post-session programming tutor that runs as an in-session Codex/Claude Code skill. After an AI-assisted coding session, it teaches you why the AI made each decision and drills you with forced-recall exercises — fighting the skill atrophy that AI coding causes.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Shadow Tutor contributors",
+  "homepage": "https://github.com/lzfxxx/shadow-tutor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lzfxxx/shadow-tutor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lzfxxx/shadow-tutor/issues"
+  },
+  "keywords": [
+    "codex",
+    "claude-code",
+    "agent-skill",
+    "skill",
+    "ai-coding",
+    "developer-education",
+    "learning",
+    "code-review",
+    "agents-md"
+  ],
+  "bin": {
+    "shadow-tutor": "bin/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "eval": "node eval/run-eval.mjs",
+    "eval:dry": "node eval/run-eval.mjs --dry",
+    "install-skill": "node bin/cli.mjs install"
+  },
+  "files": [
+    "METHODOLOGY.md",
+    "skill/",
+    "scripts/",
+    "claude/",
+    "taxonomy.yaml",
+    "install.sh",
+    "bin/"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
