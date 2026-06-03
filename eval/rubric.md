@@ -1,19 +1,21 @@
 # "Good review" scoring rubric
 
-Used to score a review produced by Shadow Tutor. **The grader is also an LLM** (invoked by `run-eval.mjs`), scoring each dimension 0–2 with a reason. Max 16. This is the regression baseline for iterating on `METHODOLOGY.md` — after changing the methodology, run this and check the score didn't drop.
+Scores one Shadow Tutor exchange. **The grader is an LLM** (invoked by `run-eval.mjs`), scoring each dimension 0–2 with a reason. Max 16. This is the regression baseline for iterating on `METHODOLOGY.md` — after changing the methodology, run this and check the score didn't drop.
 
-> Core stance: **the value of a review is not "covers everything" but "selects precisely + explains why + forces recall."** A comprehensive "summary" that just replays the session should score LOW.
+> The product is a **predict-before-reveal exchange about ONE load-bearing point**, for a developer who wants to grow. It is a help tool, not a graded test. A "comprehensive summary" of the session, or any flow that explains before the user has guessed, should score LOW.
+>
+> **Scoring requires a dialogue, not a one-shot document** — the transcript must include the user's *prediction* before the tutor's explanation. (`run-eval.mjs` supplies a simulated student to produce that prediction.)
 
 | # | Dimension | 0 | 1 | 2 |
 |---|---|---|---|---|
-| 1 | **Selectivity** | >5 points, or replays the session blow-by-blow | 3–5 points but mixed with boilerplate/already-known | exactly 3–5 load-bearing points, clearly curated |
-| 2 | **Evidence binding** | generic knowledge, not pointing at this session's code | some points bound to real code | every point bound to a real diff/decision from this session |
-| 3 | **Why over what** | only "what it is" / replays code | why and what roughly half-half | focus on "why this and not that", includes the rejected option |
-| 4 | **Gap hit** | teaches what the user obviously already knows | some points hit blind spots | precisely hits points the user likely doesn't know AND that matter |
-| 5 | **Forced recall** | no exercises, or only multiple-choice | has exercises but recognition-leaning | 2–3 exercises that force the user to produce (fill-blank/explain/fix-bug) |
-| 6 | **Gradability** | exercises can't be graded | partly gradable | exercises designed to run tests or have a clear rubric |
-| 7 | **Structured closeout** | no closeout | partial closeout | full three parts: taught / deliberately-skipped (with reason) / unsure-about |
-| 8 | **Concise & readable** | long-winded / condescending | acceptable | short, concrete, like a senior colleague, reads in one page |
+| 1 | **Selection** | summarizes the session / many points | one point but a weak or already-known pick | exactly one (at most two) load-bearing point, and the *right* one for this user's likely gap |
+| 2 | **Predict before reveal** | explains before any guess is asked | asks for a guess but reveals without really waiting / token gesture | makes the user commit a real guess (or "no idea") *before* any explanation — the core mechanic |
+| 3 | **Tailored reveal** | canned explanation, ignores the user's answer | loosely acknowledges it | the explanation is aimed exactly at where the user's guess fell short |
+| 4 | **Evidence-bound** | generic knowledge, not this session's code | loosely tied | bound to a real decision/diff from this session |
+| 5 | **Why over what** | restates what it is | half why, half what | centers on "why this and not that", names the rejected alternative |
+| 6 | **Illusion-breaking** | confirms what they already knew; no real gap surfaced | a gap is implied | the exchange makes a genuine gap visible — the "I thought I knew that" moment |
+| 7 | **Tone & respect** | quizmaster / graded / anxiety / condescending | neutral | helpful senior colleague; skipping is free; no grading or anti-cheating; positive close |
+| 8 | **Brevity** | long-winded, multi-screen | acceptable | one screen, tight |
 
 **Thresholds**: ≥13 pass; 10–12 borderline; <10 fail.
 Scoring output JSON: `{ "scores": {"1":n,...,"8":n}, "total": n, "verdict": "pass|borderline|fail", "notes": "one reason per dimension + the single most important thing to fix" }`.

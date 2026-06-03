@@ -1,20 +1,23 @@
 #!/usr/bin/env node
-// Shadow Tutor teaching-quality regression harness.
+// Shadow Tutor teaching-quality regression harness — simulated-student dialogue.
 //
-// Idea: each fixture is a "session record" (what the user did + diffs + the AI's reasoning).
-// For each fixture:
-//   1) Using METHODOLOGY.md as the methodology, feed the fixture as "this session" to a
-//      headless agent to produce a review;
-//   2) Using rubric.md, have another headless agent score the review (JSON).
-// Aggregate scores. Run it after editing METHODOLOGY.md to see if the score dropped — the baseline.
+// The product is a predict-before-reveal EXCHANGE, not a one-shot document, so the harness
+// has to play out a short dialogue. For each fixture it runs four LLM calls:
+//   1) Tutor (loaded with METHODOLOGY): pick the ONE point and ask the PREDICT question — STOP there.
+//   2) Student (a simulated learner at the target level): answer the prediction realistically.
+//   3) Tutor: continue — REVEAL tailored to the student's answer, optional LOCK, positive close.
+//   4) Judge: score the assembled dialogue against rubric.md.
+//
+// Honest limits (do not oversell a passing score): n = number of fixtures, the student is itself an
+// LLM, and the judge is an LLM grading against an author-written rubric. This measures the SHAPE of
+// the exchange (does it predict-before-reveal, break an illusion, stay on one point), not real human
+// learning. Real signal needs real users.
 //
 // Usage:
-//   node eval/run-eval.mjs                      # auto-detect provider, run all fixtures
-//   node eval/run-eval.mjs --provider codex     # force codex exec
-//   node eval/run-eval.mjs --dry                # only assemble prompts to disk, no model calls (saves quota, inspectable)
-//   node eval/run-eval.mjs --only useMemo       # only fixtures whose filename contains this string
-//
-// Providers reuse the user's existing logged-in quota (BYO-quota): claude -p / codex exec.
+//   node eval/run-eval.mjs                 # auto-detect provider, run all fixtures
+//   node eval/run-eval.mjs --provider codex
+//   node eval/run-eval.mjs --dry           # assemble stage-1 prompts only, no model calls
+//   node eval/run-eval.mjs --only useMemo
 
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
@@ -35,6 +38,14 @@ let PROVIDER = opt("--provider"); // claude | codex | undefined(auto)
 const METHODOLOGY = readFileSync(join(REPO, "METHODOLOGY.md"), "utf8");
 const RUBRIC = readFileSync(join(HERE, "rubric.md"), "utf8");
 
+// The simulated learner — embody the target user, and answer imperfectly (that's the point).
+const STUDENT_PERSONA =
+  "You are a motivated junior developer. You can read code and have shipped small features, but you " +
+  "have NOT internalized the deeper 'why' behind framework decisions. Answer the tutor's question the " +
+  "way a real learner at this level would — a short, honest first instinct that may be partially right, " +
+  "wrong, or 'no idea'. Do NOT research, do NOT reason like an expert, do NOT look anything up. One or " +
+  "two sentences. If you genuinely wouldn't know, say so plainly.";
+
 // ---- provider detection and invocation ----
 function have(bin) {
   try { execSync(`command -v ${bin}`, { stdio: "ignore" }); return true; } catch { return false; }
@@ -47,17 +58,9 @@ function detectProvider() {
 }
 function runLLM(prompt, { label }) {
   const provider = detectProvider();
-  if (DRY || !provider) return null; // dry / no CLI: skip the actual call
-  const [cmd, args] =
-    provider === "codex"
-      ? ["codex", ["exec", "-"]]               // read prompt from stdin
-      : ["claude", ["-p"]];                    // read prompt from stdin
-  const res = spawnSync(cmd, args, {
-    input: prompt,
-    encoding: "utf8",
-    timeout: 300_000,
-    maxBuffer: 64 * 1024 * 1024,
-  });
+  if (!provider) return null;
+  const [cmd, args] = provider === "codex" ? ["codex", ["exec", "-"]] : ["claude", ["-p"]];
+  const res = spawnSync(cmd, args, { input: prompt, encoding: "utf8", timeout: 300_000, maxBuffer: 64 * 1024 * 1024 });
   if (res.status !== 0) {
     console.error(`  [${label}] ${provider} exit ${res.status}: ${(res.stderr || "").slice(0, 400)}`);
     return null;
@@ -65,7 +68,6 @@ function runLLM(prompt, { label }) {
   return res.stdout.trim();
 }
 
-// Pull the first complete JSON object out of output that may contain prose
 function extractJson(text) {
   if (!text) return null;
   const s = text.indexOf("{"), e = text.lastIndexOf("}");
@@ -73,37 +75,79 @@ function extractJson(text) {
   try { return JSON.parse(text.slice(s, e + 1)); } catch { return null; }
 }
 
-function buildReviewPrompt(fixture) {
+const EVAL_NOTE =
+  "Note (eval mode): the block below is a RECORDED session. Treat it as the session you just had. " +
+  "Do not read log files, do not modify files or run commands — produce only your chat turn.";
+
+// Stage 1 — tutor selects one point and asks the prediction; must STOP before revealing.
+function buildPredictPrompt(fixture) {
   return `${METHODOLOGY}
 
 ---
-# Task (eval mode)
-Note: below is a **recorded session**. In normal use this session is already in your context; here, treat the record below **as "this session"** to review. Do not read any log files — use only this record as the session evidence. Do not actually modify files or run commands — this is offline evaluation, produce only the review text (still produce exercises, but mark the grading part as "awaiting user response").
+# Task (eval mode — PREDICT phase only)
+${EVAL_NOTE}
+Do Step 0–2 of the flow ONLY: silently select the ONE load-bearing point, then ask the user your PREDICT question. **STOP there. Output only your opening line(s) and the prediction question. Do NOT reveal or explain anything yet.**
 
 ## Session record
 ${fixture}`;
 }
 
-function buildJudgePrompt(fixture, review) {
-  return `You are a strict teaching-quality grader. Below is a "session record" and a "review" generated from it. Score the review against the rubric.
+// Stage 2 — simulated student answers.
+function buildStudentPrompt(fixture, predictTurn) {
+  return `${STUDENT_PERSONA}
+
+Here is the code context you were just working on with the AI:
+${fixture}
+
+The tutor just said this to you:
+"""
+${predictTurn}
+"""
+
+Answer the tutor's question now, in character.`;
+}
+
+// Stage 3 — tutor reveals, tailored to the student's answer.
+function buildRevealPrompt(fixture, predictTurn, studentAnswer) {
+  return `${METHODOLOGY}
+
+---
+# Task (eval mode — REVEAL phase)
+${EVAL_NOTE}
+You already opened the exchange with:
+"""
+${predictTurn}
+"""
+The learner replied:
+"""
+${studentAnswer}
+"""
+Now continue with Step 3–6: REVEAL tailored exactly to what they said, an optional light LOCK, and a positive close. (For LOCK, describe the exercise; mark grading as "would run your tests" — this is offline.) Output only your chat turn.
+
+## Session record (for your reference)
+${fixture}`;
+}
+
+// Stage 4 — judge scores the whole dialogue.
+function buildJudgePrompt(fixture, transcript) {
+  return `You are a strict teaching-quality grader. Below is a recorded coding session and a Shadow Tutor exchange about it (tutor → learner → tutor). Score the exchange against the rubric.
 
 # Scoring rubric
 ${RUBRIC}
 
-# Session record (the source material the review is based on)
+# Session record (source material)
 ${fixture}
 
-# Review to score
-${review}
+# The exchange to score
+${transcript}
 
 # Output
-Output only the JSON object required at the end of the rubric, with no extra text.`;
+Output only the JSON object required at the end of the rubric, nothing else.`;
 }
 
 function collectFixtures() {
-  const dirs = ["cc", "codex"].map((d) => join(HERE, "fixtures", d));
   const files = [];
-  for (const d of dirs) {
+  for (const d of ["cc", "codex"].map((x) => join(HERE, "fixtures", x))) {
     if (!existsSync(d)) continue;
     for (const f of readdirSync(d)) {
       if (!/\.(md|txt)$/.test(f)) continue;
@@ -117,14 +161,12 @@ function collectFixtures() {
 function main() {
   const fixtures = collectFixtures();
   const provider = detectProvider();
-  console.log(`Shadow Tutor eval — provider=${provider ?? "(none)"}${DRY ? " [dry]" : ""}, fixtures=${fixtures.length}`);
+  console.log(`Shadow Tutor eval (simulated student) — provider=${provider ?? "(none)"}${DRY ? " [dry]" : ""}, fixtures=${fixtures.length}`);
   if (fixtures.length === 0) {
-    console.log("No fixtures. Put recorded session records (.md) in eval/fixtures/{cc,codex}/. See that dir's README.");
+    console.log("No fixtures. Put recorded sessions (.md) in eval/fixtures/{cc,codex}/. See that dir's README.");
     return;
   }
-  if (!provider && !DRY) {
-    console.log("No claude / codex CLI detected. Use --dry to just assemble prompts, or install one and re-run.");
-  }
+  if (!provider && !DRY) console.log("No claude / codex CLI detected. Use --dry, or install one and re-run.");
   mkdirSync(OUT, { recursive: true });
 
   const rows = [];
@@ -133,28 +175,28 @@ function main() {
     const fixture = readFileSync(fx, "utf8");
     console.log(`\n● ${name}`);
 
-    const reviewPrompt = buildReviewPrompt(fixture);
-    writeFileSync(join(OUT, `${name}.review-prompt.txt`), reviewPrompt);
+    const predictPrompt = buildPredictPrompt(fixture);
+    writeFileSync(join(OUT, `${name}.1-predict-prompt.txt`), predictPrompt);
+    if (DRY || !provider) { console.log("  wrote predict-prompt (dry)"); rows.push({ name, total: null, verdict: "dry" }); continue; }
 
-    const review = runLLM(reviewPrompt, { label: `${name}:review` });
-    if (review) writeFileSync(join(OUT, `${name}.review.md`), review);
+    const predictTurn = runLLM(predictPrompt, { label: `${name}:predict` });
+    if (!predictTurn) { rows.push({ name, total: null, verdict: "no-predict" }); continue; }
+    const studentAnswer = runLLM(buildStudentPrompt(fixture, predictTurn), { label: `${name}:student` });
+    if (!studentAnswer) { rows.push({ name, total: null, verdict: "no-student" }); continue; }
+    const revealTurn = runLLM(buildRevealPrompt(fixture, predictTurn, studentAnswer), { label: `${name}:reveal` });
+    if (!revealTurn) { rows.push({ name, total: null, verdict: "no-reveal" }); continue; }
 
-    if (DRY || !review) {
-      console.log(`  ${DRY ? "wrote review-prompt (dry)" : "no review produced, skipping scoring"}`);
-      rows.push({ name, total: null, verdict: DRY ? "dry" : "no-review" });
-      continue;
-    }
+    const transcript = `TUTOR:\n${predictTurn}\n\nLEARNER:\n${studentAnswer}\n\nTUTOR:\n${revealTurn}`;
+    writeFileSync(join(OUT, `${name}.2-transcript.md`), transcript);
 
-    const judgePrompt = buildJudgePrompt(fixture, review);
-    const judged = extractJson(runLLM(judgePrompt, { label: `${name}:judge` }));
+    const judged = extractJson(runLLM(buildJudgePrompt(fixture, transcript), { label: `${name}:judge` }));
     if (!judged) { console.log("  failed to parse score"); rows.push({ name, total: null, verdict: "judge-fail" }); continue; }
-    writeFileSync(join(OUT, `${name}.score.json`), JSON.stringify(judged, null, 2));
+    writeFileSync(join(OUT, `${name}.3-score.json`), JSON.stringify(judged, null, 2));
     console.log(`  total=${judged.total}/16  verdict=${judged.verdict}`);
     if (judged.notes) console.log(`  notes: ${String(judged.notes).slice(0, 300)}`);
     rows.push({ name, total: judged.total, verdict: judged.verdict });
   }
 
-  // summary
   const scored = rows.filter((r) => typeof r.total === "number");
   console.log("\n==== summary ====");
   for (const r of rows) console.log(`  ${r.name.padEnd(36)} ${r.total ?? "-"}/16  ${r.verdict}`);
