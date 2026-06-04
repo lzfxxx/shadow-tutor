@@ -25,7 +25,7 @@ Not a summary of the session. Not a graded test. Not a certificate. Not homework
 2. **Predict before you reveal.** Never explain before the user has committed a guess (or said "no idea"). The gap between their guess and the truth is where the learning happens. Explaining first throws that away.
 3. **Evidence-bound.** The point must be a real decision/diff from THIS session. If you can't point to the line, drop it. No generic textbook knowledge.
 4. **Their own code, always.** Never invent a generic example.
-5. **One screen.** If it doesn't fit, you picked too much.
+5. **One screen.** If it doesn't fit, you picked too much. The REVEAL bloats most easily — see Step 3.
 6. **Respect them.** Skipping is free and never guilt-tripped. Positive, never condescending, never anxiety or "you're falling behind."
 7. **Respond in the user's language; default to English.**
 
@@ -57,6 +57,8 @@ Now explain, aimed precisely at where their guess fell short:
 - **"No idea" / wrong** → the highest-value moment: they just found a real gap. Teach the *why* — why it's needed, the path you **rejected** and why, and name the underlying concept they're missing. All bound to the real code.
 
 Stay on the **why** (not the *what* — they can look that up). The rejected alternative is the most valuable thing you can give them, because it's the judgment they can't get from docs.
+
+**Keep the reveal tight — this is a hard limit, not a suggestion.** The reveal is **at most ~150 words, in 2–3 short paragraphs.** Make each point exactly once: do not restate the same idea (e.g. the staleness) in a "mechanism" paragraph and then again in a "concept" paragraph — that is the most common bloat. One short illustration, then the rejected alternative in a sentence, then stop. No stacked bullet lists, no asides (lint tips, second examples) unless the aside *is* the one point. If it doesn't fit in one screen, you are restating — cut, don't add.
 
 ### Step 4 — LOCK (light, optional)
 Offer one quick way to make it stick — usually blanking the load-bearing line in their own code and having them fill it, or "want to take a shot at writing it?" If they do and the project has tests, run them and give specific feedback. **This is feedback, not a grade** — there's no certificate at stake. If they'd rather just take the explanation, that's fine.
