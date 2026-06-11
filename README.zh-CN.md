@@ -23,12 +23,10 @@ npx skills add lzfxxx/shadow-tutor
 # Codex 内直接从仓库装
 #   $skill-installer https://github.com/lzfxxx/shadow-tutor
 
-# npx 安装器（同时装进 Claude Code 和 Codex）
-npx shadow-tutor install            # 或 npx shadow-tutor install cc | codex
-
-# 克隆后跑安装脚本
+# 克隆后跑安装器（shell 或 node，都会同时装进 Claude Code 和 Codex）
 git clone https://github.com/lzfxxx/shadow-tutor && cd shadow-tutor
 ./install.sh                        # 或 ./install.sh cc | ./install.sh codex
+node bin/cli.mjs install            # 等价，跨平台
 ```
 </details>
 
@@ -86,7 +84,7 @@ eval/                       # 教学质量回归 harness（产品成败的度量
   fixtures/{cc,codex}/      #   录制的会话（React、Python asyncio、Django ORM）
 claude/commands/            # 可选的 /shadow-tutor slash command（Claude Code）
 plugins/ + .claude-plugin/  # 生成的 Claude Code 插件市场布局（node bin/cli.mjs build）
-bin/cli.mjs                 # 跨平台安装器 + 插件构建（npx shadow-tutor install）
+bin/cli.mjs                 # 跨平台安装器 + 插件构建（node bin/cli.mjs install|build）
 install.sh                  # shell 安装器
 docs/dev/                   # 维护者手册（eval 回归门禁、添加 fixture）
 taxonomy.yaml               # ~130 初级概念种子

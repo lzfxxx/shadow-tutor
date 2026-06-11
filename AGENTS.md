@@ -8,7 +8,7 @@ plus thin supporting code. Keep changes small, evidence-checked, and language-ne
 
 `skills/shadow-tutor/` **is** the product — a self-contained skill bundle
 (`SKILL.md` + `METHODOLOGY.md` + `scripts/knowledge.mjs`) that every install path
-(`npx skills add`, plugin marketplace, `install.sh`, `npx shadow-tutor install`) copies verbatim.
+(`npx skills add`, plugin marketplace, `install.sh`, `node bin/cli.mjs install`) copies verbatim.
 Never fork per-tool copies; `plugins/` is generated from it by `node bin/cli.mjs build`.
 
 ## Build / test / eval

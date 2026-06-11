@@ -27,12 +27,10 @@ Then finish some real coding with your agent and type `/shadow-tutor` (or just s
 # Codex skill-installer, straight from this repo
 #   $skill-installer https://github.com/lzfxxx/shadow-tutor
 
-# npx installer (installs into both Claude Code and Codex)
-npx shadow-tutor install            # or: npx shadow-tutor install cc | codex
-
-# Clone and run the shell installer
+# Clone and run an installer (shell or node — both install into Claude Code and Codex)
 git clone https://github.com/lzfxxx/shadow-tutor && cd shadow-tutor
 ./install.sh                        # or: ./install.sh cc | ./install.sh codex
+node bin/cli.mjs install            # same thing, cross-platform
 ```
 </details>
 
@@ -92,7 +90,7 @@ eval/                       # teaching-quality regression harness (the measure o
   fixtures/{cc,codex}/      #   recorded sessions (React, Python asyncio, Django ORM)
 claude/commands/            # optional /shadow-tutor slash command for Claude Code
 plugins/ + .claude-plugin/  # generated Claude Code marketplace layout (node bin/cli.mjs build)
-bin/cli.mjs                 # cross-platform installer + plugin builder (npx shadow-tutor install)
+bin/cli.mjs                 # cross-platform installer + plugin builder (node bin/cli.mjs install|build)
 install.sh                  # shell installer
 docs/dev/                   # maintainer playbooks (eval regression gate, adding fixtures)
 taxonomy.yaml               # ~130 junior-concept seed (for profile aggregation)
