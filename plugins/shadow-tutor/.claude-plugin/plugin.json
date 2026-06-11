@@ -1,8 +1,8 @@
 {
   "name": "shadow-tutor",
   "displayName": "Shadow Tutor",
-  "version": "0.1.0",
-  "description": "A post-session programming tutor that runs as an in-session Codex/Claude Code skill. After an AI-assisted coding session, it teaches you why the AI made each decision and drills you with forced-recall exercises — fighting the skill atrophy that AI coding causes.",
+  "version": "0.2.0",
+  "description": "A post-session programming tutor that runs as an in-session Codex/Claude Code skill. After an AI-assisted coding session it picks the one load-bearing decision you most likely don't truly understand, makes you predict why before it reveals, then teaches the why on your own code — fighting the skill atrophy that AI coding causes.",
   "author": {
     "name": "Shadow Tutor contributors"
   },

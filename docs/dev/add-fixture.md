@@ -1,9 +1,8 @@
----
-name: add-fixture
-description: Normalize a recorded coding session into an eval fixture and place it correctly. Use when adding a new test fixture from a real Claude Code or Codex session, or when someone pastes a raw session log/transcript that should become a regression fixture for the teaching-quality eval.
----
+# add-fixture — turn a recorded session into an eval fixture
 
-# add-fixture
+> Maintainer playbook (referenced from `AGENTS.md`). Use when adding a new test fixture from a
+> real Claude Code or Codex session, or when someone hands you a raw session log that should
+> become a regression fixture for the teaching-quality eval.
 
 Turn a raw recorded session into a clean eval fixture that strengthens the regression set.
 
@@ -20,7 +19,7 @@ Turn a raw recorded session into a clean eval fixture that strengthens the regre
 2. Write it in the structure of `eval/fixtures/cc/react-search-filter.md`.
 3. Ensure the fixture **mixes signal and noise** — genuinely teachable points alongside boilerplate — so it actually tests the methodology's selectivity. If the session was trivially all-known or all-boilerplate, say so; it may not be a useful fixture.
 4. Save to `eval/fixtures/cc/` or `eval/fixtures/codex/` with a descriptive kebab-case filename.
-5. Run `npm run eval:dry` to confirm it's picked up, then (if quota available) `npm run eval --only <name>` to sanity-check it produces a sensible review.
+5. Run `npm run eval:dry` to confirm it's picked up, then (if quota available) `npm run eval --only <name>` to sanity-check it produces a sensible exchange.
 
 **Output:** the new fixture file + a one-line note on what teachable points it's meant to exercise.
 

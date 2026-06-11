@@ -35,7 +35,7 @@ const DRY = has("--dry");
 const ONLY = opt("--only");
 let PROVIDER = opt("--provider"); // claude | codex | undefined(auto)
 
-const METHODOLOGY = readFileSync(join(REPO, "METHODOLOGY.md"), "utf8");
+const METHODOLOGY = readFileSync(join(REPO, "skills", "shadow-tutor", "METHODOLOGY.md"), "utf8");
 const RUBRIC = readFileSync(join(HERE, "rubric.md"), "utf8");
 
 // The simulated learner — embody the target user, and answer imperfectly (that's the point).

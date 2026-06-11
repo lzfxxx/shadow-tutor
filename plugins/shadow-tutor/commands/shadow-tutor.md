@@ -1,7 +1,7 @@
 ---
-description: Run a Shadow Tutor learning review of the session you just had (explain the why, fill knowledge gaps, do exercises)
+description: Run a Shadow Tutor review of the session you just had — predict why the AI made its one load-bearing decision, then learn the why on your own code
 ---
 
-Invoke the shadow-tutor skill to run a learning review of **the session you just had**.
+Invoke the shadow-tutor skill to review **the session you just had**.
 
-Follow the skill's `METHODOLOGY.md` exactly: load the user profile → SHORTLIST (cite evidence first) → gate down to 3–5 points → teach (heavy on why, bound to real code) → walk me through exercises and actually grade with the project's tests → update knowledge.json → structured closeout (taught / deliberately skipped / unsure about).
+Follow the skill's `METHODOLOGY.md` exactly: load the knowledge profile → silently SELECT the one load-bearing decision I most likely don't truly understand → ask me to PREDICT why (wait for my answer — never explain first) → REVEAL tailored to what I said, including the rejected alternative → offer an optional light LOCK exercise on my real code → update knowledge.json → close positive.

@@ -6,7 +6,7 @@
 
 ## Type
 
-- [ ] Teaching methodology (`METHODOLOGY.md` / `skill/`)
+- [ ] Teaching methodology (`skills/shadow-tutor/`)
 - [ ] Eval / fixtures
 - [ ] Tooling (`scripts/`, `bin/`, `install.sh`, CI)
 - [ ] Docs
@@ -17,7 +17,7 @@
 - [ ] `npm test` passes
 - [ ] Runtime files stay English + language-neutral
 
-## Teaching-quality impact (required if `METHODOLOGY.md` or `skill/` changed)
+## Teaching-quality impact (required if `skills/shadow-tutor/` changed)
 
 Run `npm run eval` before and after and paste rubric totals. **Scores must stay ≥13 and not regress.**
 

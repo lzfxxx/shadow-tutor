@@ -6,9 +6,10 @@ Internal; refine before submitting. Be honest — the project is early but strat
 ## What the project is
 
 Shadow Tutor is a **native Codex/Claude Code skill** that runs *inside* a coding session. After
-an AI-assisted task, it teaches the developer **why** the AI made each decision (including the
-options it rejected), binds every point to the session's real diffs, and drills them with
-forced-recall exercises graded against the project's own tests. It runs on the user's existing
+an AI-assisted task, it picks the **one load-bearing decision** the developer most likely doesn't
+truly understand, makes them **predict why before it reveals** (breaking the "I get it" illusion),
+then teaches the why — including the options the AI rejected — bound to the session's real diffs,
+with an optional exercise graded by the project's own tests. It runs on the user's existing
 subscription (no API key), and ships the *same* skill to both Codex and Claude Code.
 
 ## Why it matters to the ecosystem
@@ -30,18 +31,19 @@ maintainer status verifiable on request.
 
 ## Evidence of quality & active maintenance
 
-- A teaching-quality **eval harness** (`eval/run-eval.mjs`) scores generated reviews against a
-  rubric; the seed fixture scores **15/16**. Quality is measurable and regression-tested, not
-  hand-wavy.
+- A teaching-quality **eval harness** (`eval/run-eval.mjs`) plays out a simulated-student
+  dialogue (predict → imperfect answer → tailored reveal) and scores it against a rubric;
+  fixtures across React / Python asyncio / Django ORM average **15.3/16**. Quality is measurable
+  and regression-tested, not hand-wavy.
 - CI (unit tests across Node 18/20/22 + eval prompt-assembly + installer check), issue/PR
-  templates, CONTRIBUTING, CHANGELOG, dogfooded repo-local maintenance skills (`.agents/skills/`).
+  templates, CONTRIBUTING, CHANGELOG, maintainer playbooks (`docs/dev/`).
 - The repo itself follows the Codex best-practice patterns (AGENTS.md with mandatory skill-usage
   gates, progressive-disclosure skills, scripts-as-tiny-CLIs).
 
 ## Adoption plan
 
-- Zero-friction install already live: `npx shadow-tutor install`, `./install.sh`, and Codex
-  `$skill-installer <repo-url>`.
+- Zero-friction install already live: `npx skills add lzfxxx/shadow-tutor` (the skills-CLI
+  standard), `npx shadow-tutor install`, `./install.sh`, and Codex `$skill-installer <repo-url>`.
 - Submit to the **openai/skills** catalog (`.experimental/`) and a Claude Code plugin marketplace.
 - Grow the eval regression set with real recorded sessions across languages/frameworks; publish
   example reviews to demonstrate value.

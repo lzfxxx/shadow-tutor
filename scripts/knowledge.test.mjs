@@ -9,7 +9,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), "knowledge.mjs");
+const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "shadow-tutor", "scripts", "knowledge.mjs");
 let HOME;
 
 function run(args, { input } = {}) {

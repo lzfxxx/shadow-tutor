@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Shadow Tutor 安装脚本。
 # Claude Code 与 Codex 的 skill 格式一致（都是 <skills>/<name>/SKILL.md + name/description frontmatter），
-# 所以两家共用同一份 skill 源。本脚本把共享主体（SKILL.md + METHODOLOGY.md + scripts/）
-# 组装成自包含 bundle，分别装进两家的 skills 目录。重复运行 = 覆盖更新（幂等）。
+# 所以两家共用同一份 skill 源：skills/shadow-tutor/ 本身就是自包含 bundle
+# （SKILL.md + METHODOLOGY.md + scripts/），整目录拷贝即可。重复运行 = 覆盖更新（幂等）。
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -15,10 +15,8 @@ say() { printf '  %s\n' "$1"; }
 # 把自包含 skill bundle 装进给定 skills 根目录
 install_skill_into() {
   local root="$1" dest="$1/shadow-tutor"
-  mkdir -p "$dest/scripts"
-  cp "$REPO/skill/SKILL.md"        "$dest/SKILL.md"
-  cp "$REPO/METHODOLOGY.md"        "$dest/METHODOLOGY.md"
-  cp "$REPO/scripts/knowledge.mjs" "$dest/scripts/knowledge.mjs"
+  mkdir -p "$dest"
+  cp -R "$REPO/skills/shadow-tutor/." "$dest/"
   say "skill → $dest"
 }
 

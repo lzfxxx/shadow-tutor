@@ -4,11 +4,13 @@
 //   shadow-tutor install [cc|codex|all]   install the skill into the tool's skills dir
 //   shadow-tutor build                     (re)generate plugins/shadow-tutor/ for the CC marketplace
 //
-// Both Claude Code and Codex use the same SKILL.md format, so they share one source
-// (skill/SKILL.md + METHODOLOGY.md + scripts/). The Claude Code *plugin marketplace* needs a
-// committed plugin layout, which `build` assembles from those same sources (CI checks it's in sync).
+// Both Claude Code and Codex use the same SKILL.md format, so they share one source:
+// skills/shadow-tutor/ is itself the self-contained bundle (SKILL.md + METHODOLOGY.md + scripts/),
+// which also makes `npx skills add lzfxxx/shadow-tutor` work directly. The Claude Code *plugin
+// marketplace* needs a committed plugin layout, which `build` copies from that same source
+// (CI checks it's in sync).
 
-import { mkdirSync, copyFileSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, copyFileSync, writeFileSync, readFileSync, rmSync, cpSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,10 +19,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), ".."); // package roo
 
 // Copy the self-contained skill bundle (SKILL.md + METHODOLOGY.md + scripts/) into a skills dir.
 function assembleSkill(skillDir) {
-  mkdirSync(join(skillDir, "scripts"), { recursive: true });
-  copyFileSync(join(ROOT, "skill", "SKILL.md"), join(skillDir, "SKILL.md"));
-  copyFileSync(join(ROOT, "METHODOLOGY.md"), join(skillDir, "METHODOLOGY.md"));
-  copyFileSync(join(ROOT, "scripts", "knowledge.mjs"), join(skillDir, "scripts", "knowledge.mjs"));
+  cpSync(join(ROOT, "skills", "shadow-tutor"), skillDir, { recursive: true });
 }
 
 // ---------- install ----------

@@ -3,12 +3,12 @@
   "owner": {
     "name": "Shadow Tutor contributors"
   },
-  "description": "Shadow Tutor — a post-session programming tutor that teaches you why the AI made each decision and drills you with forced-recall exercises.",
+  "description": "Shadow Tutor — a post-session programming tutor: it makes you predict why the AI made its one load-bearing decision before it reveals, then teaches the why on your own code.",
   "plugins": [
     {
       "name": "shadow-tutor",
       "source": "./plugins/shadow-tutor",
-      "description": "After an AI-assisted coding session, get a short evidence-backed review of why each decision was made (including rejected options), plus graded forced-recall exercises. Fights the skill atrophy AI coding causes.",
+      "description": "After an AI-assisted coding session, it picks the one load-bearing decision you most likely don't truly understand, makes you predict why before it reveals (breaking the \"I get it\" illusion), and teaches the why — including the rejected alternative — on your own code. Fights the skill atrophy AI coding causes.",
       "homepage": "https://github.com/lzfxxx/shadow-tutor",
       "repository": "https://github.com/lzfxxx/shadow-tutor",
       "license": "MIT"

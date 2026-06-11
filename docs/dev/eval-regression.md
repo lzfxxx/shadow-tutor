@@ -1,15 +1,15 @@
----
-name: eval-regression
-description: Run the teaching-quality eval and confirm the rubric score has not regressed. Use this BEFORE and AFTER any change to METHODOLOGY.md or anything under skill/, since teaching quality is the product and a silent drop there is the worst failure mode. Also use when a PR touches review-authoring behavior.
----
+# eval-regression — guard teaching quality before merging
 
-# eval-regression
+> Maintainer playbook (referenced from `AGENTS.md`). Run BEFORE and AFTER any change to
+> `skills/shadow-tutor/` (especially `METHODOLOGY.md`), since teaching quality is the product
+> and a silent drop there is the worst failure mode. Also applies when a PR touches
+> review-authoring behavior.
 
-Guard the one metric that matters: does the auto-generated review still teach well?
+Guard the one metric that matters: does the predict-before-reveal exchange still teach well?
 
 ## Contract
 
-**Trigger:** a change to `METHODOLOGY.md`, `skill/SKILL.md`, or any review-authoring logic.
+**Trigger:** a change to `skills/shadow-tutor/METHODOLOGY.md`, `skills/shadow-tutor/SKILL.md`, or any review-authoring logic.
 
 **Steps:**
 1. Establish a baseline first if you haven't: run `npm run eval` on the current `main` and record each fixture's `total` and `verdict` (artifacts land in `eval/out/`).
@@ -23,4 +23,5 @@ Guard the one metric that matters: does the auto-generated review still teach we
 
 ## Notes
 - Real scoring needs `claude` or `codex` on PATH (uses the user's own quota). In CI, only `eval:dry` runs.
-- Grow the regression set by adding real fixtures (see `$add-fixture`); a single fixture is a weak guard.
+- Grow the regression set by adding real fixtures (see [add-fixture.md](./add-fixture.md)); a single fixture is a weak guard.
+- The student is itself an LLM and the judge grades an author-written rubric — treat scores as a regression signal, not proof of human learning.
