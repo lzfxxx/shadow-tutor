@@ -43,8 +43,8 @@ maintainer status verifiable on request.
 ## Adoption plan
 
 - Zero-friction install already live: `npx skills add lzfxxx/shadow-tutor` (the skills-CLI
-  standard), `./install.sh` / `node bin/cli.mjs install`, and Codex `$skill-installer <repo-url>`
-  (npm package name reserved for `npx shadow-tutor install`, pending publish).
+  standard), `npx shadow-tutor install` (published on npm), `./install.sh`, and Codex
+  `$skill-installer <repo-url>`.
 - Submit to the **openai/skills** catalog (`.experimental/`) and a Claude Code plugin marketplace.
 - Grow the eval regression set with real recorded sessions across languages/frameworks; publish
   example reviews to demonstrate value.
